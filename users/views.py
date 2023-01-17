@@ -1,9 +1,7 @@
 from django.contrib.auth import login
-from rest_framework import permissions, generics
-from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-from knox.models import AuthToken
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
 from users.serializers import UserRegisterSerializer, UserSerializer
@@ -23,9 +21,12 @@ class LoginView(KnoxLoginView):
         return super().post(request, format=None)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class RegisterViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = (permissions.AllowAny,)
 
-        
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
