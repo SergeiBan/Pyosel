@@ -9,38 +9,53 @@
     <title>Пёсель</title>
 </head>
 <body>
-    <div class="container">
-        <div class="row" id="header">
+    <div class="container" id="header">
+        <div class="row">
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
-                    <a href="#" class="nav-item nav-link">Пёсель</a>
-                    <a href="#" class="nav-item nav-link">Найдёныши</a>
-                    <a href="#" class="nav-item nav-link">Бесплатные</a>
-                    <a href="#" class="nav-item nav-link">Торговля</a>
-                    
+                    <router-link to="/" class="nav-item nav-link">Пёсель</router-link>
+                    <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
+                    <router-link to="/free" class="nav-item nav-link">Бесплатные</router-link>
+                    <router-link to="/buy" class="nav-item nav-link">Купить</router-link>
                     <div v-if="is_logged" class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Управление</a>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">Профиль</a>
-                            <a href="#" class="dropdown-item">Животные</a>
-                            <a href="#" class="dropdown-item">Выйти</a>
+                            <router-link to="/" class="dropdown-item">Профиль</router-link>
+                            <router-link to="/" class="dropdown-item">Животные</router-link>
+                            <router-link to="/" class="dropdown-item">Выйти</router-link>
                         </div>
                     </div>
-                    <a v-else href="#" class="nav-item nav-link">Вход</a>
-                    
+                    <router-link to="/enter" v-else href="#" class="nav-item nav-link">Вход</router-link>
                 </nav>
             </div>
         </div>
         <div class="row">
-            <div class="col-6 col-md-3">Фото</div>
-            <div class="col-6 col-md-3">Фото</div>
-            <div class="col-6 col-md-3">Фото</div>
-            <div class="col-6 col-md-3">Фото</div>
+            <router-view></router-view>
         </div>
     </div>
 </body>
 
 <script type="module">
+    import RegisterComp from '/static/js/register.js'
+
+    const Home = { template: '<div class="col-6 col-md-3">Фото</div>' }
+    const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
+    const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
+    const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
+    const Enter = { template: '<div class="col-6 col-md-3">Вход</div>' }
+
+    const routes = [
+        { path: '/', component: Home },
+        { path: '/found', component: Found },
+        { path: '/free', component: Free },
+        { path: '/buy', component: Buy },
+        { path: '/enter', component: RegisterComp }
+    ]
+
+    const router = VueRouter.createRouter({
+        history: VueRouter.createWebHistory(),
+        routes
+    })
     const app = Vue.createApp({
         data() {
             return {
@@ -49,5 +64,6 @@
         }
     })
 
+    app.use(router)
     app.mount('#header')
 </script>
