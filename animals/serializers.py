@@ -13,4 +13,3 @@ class AnimalSerializer(serializers.ModelSerializer):
             'description', 'color', 'on_sale', 'price', 'free_to_take',
             'photos'
         )
-

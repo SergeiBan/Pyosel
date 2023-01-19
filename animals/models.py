@@ -18,7 +18,7 @@ class Animal(models.Model):
     species = models.CharField(max_length=16, choices=SPECIES_OPTIONS)
     name = models.CharField(max_length=32)
     breed = models.CharField(max_length=64, blank=True, null=True)
-    description = models.CharField(max_length=2000, blank=True, null=True)
+    description = models.TextField(max_length=2000, blank=True, null=True)
     color = models.CharField(max_length=32, blank=True, null=True)
 
     on_sale = models.BooleanField(default=False)

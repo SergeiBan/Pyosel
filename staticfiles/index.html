@@ -17,26 +17,37 @@
                     <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
                     <router-link to="/free" class="nav-item nav-link">Бесплатные</router-link>
                     <router-link to="/buy" class="nav-item nav-link">Купить</router-link>
+
                     <div v-if="is_logged" class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Управление</a>
                         <div class="dropdown-menu">
                             <router-link to="/" class="dropdown-item">Профиль</router-link>
-                            <router-link to="/" class="dropdown-item">Животные</router-link>
-                            <router-link to="/" class="dropdown-item">Выйти</router-link>
+                            <router-link to="/add" class="dropdown-item">Животные</router-link>
+                            <router-link to="/" @click="logout" class="dropdown-item">Выйти</router-link>
                         </div>
                     </div>
-                    <router-link to="/enter" v-else href="#" class="nav-item nav-link">Вход</router-link>
+                    <div v-else class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Войти</a>
+                        <div class="dropdown-menu">
+                            <router-link to="/login" class="dropdown-item">Вход</router-link>
+                            <router-link to="/register" class="dropdown-item">Регистрация</router-link>
+                        </div>
+                    </div>
+
                 </nav>
             </div>
         </div>
         <div class="row">
-            <router-view></router-view>
+            <router-view @login="(login_state) => {is_logged = login_state;}">
+
+            </router-view>
         </div>
     </div>
 </body>
 
 <script type="module">
     import RegisterComp from '/static/js/register.js'
+    import LoginComp from '/static/js/login.js'
 
     const Home = { template: '<div class="col-6 col-md-3">Фото</div>' }
     const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
@@ -49,7 +60,8 @@
         { path: '/found', component: Found },
         { path: '/free', component: Free },
         { path: '/buy', component: Buy },
-        { path: '/enter', component: RegisterComp }
+        { path: '/login', component: LoginComp },
+        { path: '/register', component: RegisterComp }
     ]
 
     const router = VueRouter.createRouter({
@@ -61,6 +73,17 @@
             return {
                 is_logged: false
             }
+        },
+        methods: {
+            logout() {
+                localStorage.removeItem('token')
+                localStorage.removeItem('token_expiry')
+                this.is_logged = false
+            }
+        },
+        mounted() {
+            const token = localStorage.getItem('token')
+            if (token) { this.is_logged = true }
         }
     })
 

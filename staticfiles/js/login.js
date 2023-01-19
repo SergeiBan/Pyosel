@@ -1,41 +1,44 @@
 export default {
     data() {
         return {
-            welcome: 'Нет учётки? Зарегистрируйтесь!',
+            welcome: 'Введите имя и пароль для входа',
             username: '',
-            email: '',
             password: '',
-            register_errors: ''
+            login_errors: ''
         }
     },
     methods: {
-        async register_submit(e) {
+        async login_submit(e) {
             const requestOptions = {
                 method: "POST",
                 headers: {"Content-Type": "application/json" },
                 body: JSON.stringify({
                     "username": this.username,
-                    "email": this.email,
                     "password": this.password
                 })
             }
             
-            const response = await fetch('/api/v1/register/', requestOptions)
-
+            const response = await fetch('/api/v1/login/', requestOptions)
             const response_json = await response.json()
-            if (response['status'] != 201) {
-                this.register_errors = Object.values(response_json)
-                return
+            console.log(response, '\n', response_json)
+
+            if (response['status'] != 200) {
+                this.login_errors = Object.values(response_json)
+            } else {
+                window.localStorage.setItem('token', response_json['token'])
+                window.localStorage.setItem('token_expiry', response_json['expiry'])
+                this.$emit('login', true)
+                this.$router.push('/')
             }
-            this.$router.push('/login')
+            
         }
     },
     template: `
-    <form @submit.prevent="register_submit">
+    <form @submit.prevent="login_submit">
         <p>{{ welcome }}</p>
 
-        <div v-if="register_errors">
-            <div v-for="error in register_errors" :key="error.id">
+        <div v-if="login_errors">
+            <div v-for="error in login_errors" :key="error.id">
                 <small v-for="error_part in error" :key="error_part.id" class="text-primary">
                     {{ error_part }}
                 </small>
@@ -43,9 +46,8 @@ export default {
         </div>
 
         <input v-model="username" class="form-control mb-2" placeholder="Имя" required>
-        <input v-model="email" type="email" class="form-control mb-2" placeholder="Почта" required>
         <input v-model="password" type="password" class="form-control mb-4" placeholder="Пароль" required>
-        <input type="submit" class="form-control btn btn-outline-info" value="Зарегистрироваться">
+        <input type="submit" class="form-control btn btn-outline-info" value="Войти">
     </form>
     `
 }
