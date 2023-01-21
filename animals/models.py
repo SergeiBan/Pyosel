@@ -10,7 +10,8 @@ class Animal(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='animals')
     parent = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, related_name='offspring', null=True)
+        'self', on_delete=models.SET_NULL, related_name='offspring',
+        blank=True, null=True)
     SPECIES_OPTIONS = (
         ('dogs', 'Собаки'),
         ('cats', 'Кошки')
