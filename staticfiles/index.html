@@ -48,12 +48,12 @@
 <script type="module">
     import RegisterComp from '/static/js/register.js'
     import LoginComp from '/static/js/login.js'
+    import AddComp from '/static/js/add.js'
 
     const Home = { template: '<div class="col-6 col-md-3">Фото</div>' }
     const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
     const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
     const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
-    const Enter = { template: '<div class="col-6 col-md-3">Вход</div>' }
 
     const routes = [
         { path: '/', component: Home },
@@ -61,7 +61,8 @@
         { path: '/free', component: Free },
         { path: '/buy', component: Buy },
         { path: '/login', component: LoginComp },
-        { path: '/register', component: RegisterComp }
+        { path: '/register', component: RegisterComp },
+        { path: '/add', component: AddComp }
     ]
 
     const router = VueRouter.createRouter({

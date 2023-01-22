@@ -29,6 +29,8 @@ class Animal(models.Model):
     lost = models.BooleanField(default=False)
     found = models.BooleanField(default=False)
 
+    avatar = models.ImageField(upload_to='animals')
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

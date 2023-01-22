@@ -1,7 +1,7 @@
 export default {
     data() {
         return {
-            welcome: 'Опишите животное, которому нужен новый хозяин',
+            welcome: 'Опишите животное',
             city: '',
             parent: '',
             species: '',
@@ -14,50 +14,76 @@ export default {
             free_to_take: '',
             lost: '',
             found: '',
-            add_errors: ''
+            photos: '',
+            token: window.localStorage.getItem('token'),
+            errors: ''
         }
     },
     methods: {
-        async login_submit(e) {
+        async add_submit(e) {
+            
+            let data = new FormData()
+            data.append('city', this.city)
+            data.append('species', this.species)
+            data.append('name', this.name)
+            data.append('avatar', Array.from(this.photos)[0])
+
             const requestOptions = {
                 method: "POST",
-                headers: {"Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "username": this.username,
-                    "password": this.password
-                })
+                headers: {"Authorization": `Token ${this.token}`},
+                body: data
+                // body: JSON.stringify({
+                //     "city": this.city,
+                //     "species": this.species,
+                //     "name": this.name,
+                //     "photos": this.photos
+                // })
             }
             
-            const response = await fetch('/api/v1/login/', requestOptions)
+            const response = await fetch('/api/v1/animals/', requestOptions)
+            
             const response_json = await response.json()
-            console.log(response, '\n', response_json)
+            console.log(response_json)
 
             if (response['status'] != 200) {
                 this.login_errors = Object.values(response_json)
             } else {
-                window.localStorage.setItem('token', response_json['token'])
-                window.localStorage.setItem('token_expiry', response_json['expiry'])
-                this.$emit('login', true)
                 this.$router.push('/')
             }
             
+        },
+        add_photos(event) {
+            this.photos = event.target.files
         }
     },
     template: `
-    <form @submit.prevent="login_submit">
+    <form @submit.prevent="add_submit">
         <p>{{ welcome }}</p>
 
-        <div v-if="login_errors">
-            <div v-for="error in login_errors" :key="error.id">
+        <div v-if="errors">
+            <div v-for="error in errors" :key="error.id">
                 <small v-for="error_part in error" :key="error_part.id" class="text-primary">
                     {{ error_part }}
                 </small>
             </div>
         </div>
 
-        <input v-model="username" class="form-control mb-2" placeholder="Имя" required>
-        <input v-model="password" type="password" class="form-control mb-4" placeholder="Пароль" required>
-        <input type="submit" class="form-control btn btn-outline-info" value="Войти">
+        <h2>Обязательные поля</h2>
+        <input v-model="city" class="form-control mb-2" placeholder="Город" required>
+        <select v-model="species" class="form-select mb-2" required>
+            <option disabled value="">Категория</option>
+            <option value="dogs">Собаки</option>
+            <option value="cats">Кошки</option>
+        </select>
+        <input v-model="name" class="form-control mb-4" placeholder="Кличка" required>
+
+        <h2>Необязательные поля</h2>
+        <input type="file" accept="image/*" name="file-1" @change="add_photos" class="form-control mb-2">
+        <input type="file" name="file-2" class="form-control mb-2">
+        <input type="file" name="file-3" class="form-control mb-2">
+        <input type="file" name="file-4" class="form-control mb-2">
+        <input type="file" name="file-5" class="form-control mb-2">
+        <input type="submit" class="form-control btn btn-outline-info" value="Добавить">
     </form>
     `
 }
