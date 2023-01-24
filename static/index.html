@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4">null</script>
+    <title>Пёсель</title>
+</head>
+<body>
+    <div class="container" id="header">
+        <div class="row">
+            <div class="col">
+                <nav class="nav nav-pills nav-fill">
+                    <router-link to="/" class="nav-item nav-link">Пёсель</router-link>
+                    <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
+                    <router-link to="/free" class="nav-item nav-link">Бесплатные</router-link>
+                    <router-link to="/buy" class="nav-item nav-link">Купить</router-link>
+
+                    <div v-if="is_logged" class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Управление</a>
+                        <div class="dropdown-menu">
+                            <router-link to="/" class="dropdown-item">Профиль</router-link>
+                            <router-link to="/add" class="dropdown-item">Животные</router-link>
+                            <router-link to="/" @click="logout" class="dropdown-item">Выйти</router-link>
+                        </div>
+                    </div>
+                    <div v-else class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Войти</a>
+                        <div class="dropdown-menu">
+                            <router-link to="/login" class="dropdown-item">Вход</router-link>
+                            <router-link to="/register" class="dropdown-item">Регистрация</router-link>
+                        </div>
+                    </div>
+
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <router-view @login="(login_state) => {is_logged = login_state;}">
+
+            </router-view>
+        </div>
+    </div>
+</body>
+
+<script type="module">
+    import RegisterComp from '/static/js/register.js'
+    import LoginComp from '/static/js/login.js'
+    import AddComp from '/static/js/add.js'
+
+    const Home = { template: '<div class="col-6 col-md-3">Фото</div>' }
+    const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
+    const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
+    const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
+
+    const routes = [
+        { path: '/', component: Home },
+        { path: '/found', component: Found },
+        { path: '/free', component: Free },
+        { path: '/buy', component: Buy },
+        { path: '/login', component: LoginComp },
+        { path: '/register', component: RegisterComp },
+        { path: '/add', component: AddComp }
+    ]
+
+    const router = VueRouter.createRouter({
+        history: VueRouter.createWebHistory(),
+        routes
+    })
+    const app = Vue.createApp({
+        data() {
+            return {
+                is_logged: false
+            }
+        },
+        methods: {
+            logout() {
+                localStorage.removeItem('token')
+                localStorage.removeItem('token_expiry')
+                this.is_logged = false
+            }
+        },
+        mounted() {
+            const token = localStorage.getItem('token')
+            if (token) { this.is_logged = true }
+        }
+    })
+
+    app.use(router)
+    app.mount('#header')
+</script>

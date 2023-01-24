@@ -29,7 +29,10 @@ class Animal(models.Model):
     lost = models.BooleanField(default=False)
     found = models.BooleanField(default=False)
 
-    avatar = models.ImageField(upload_to='animals')
+    # avatar = models.ImageField(upload_to='animals')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         constraints = [
@@ -44,3 +47,4 @@ class AnimalPhoto(models.Model):
     animal = models.ForeignKey(
         Animal, on_delete=models.CASCADE, related_name='photos')
     photo = models.ImageField(upload_to='animals')
+    is_avatar = models.BooleanField(default=False)
