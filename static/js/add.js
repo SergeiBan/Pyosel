@@ -56,11 +56,54 @@ export default {
             
         },
         add_photos(event) {
-            this.photos.push(event.target.files[0])
+            const img_data = event.target.files[0]
+            
             const fieldName = event.target.name
-            if (fieldName == 'avatar') { this.avatar_url = URL.createObjectURL(event.target.files[0])}
-            if (fieldName == 'aux-1') { this.aux_1_url = URL.createObjectURL(event.target.files[0])}
-            if (fieldName == 'aux-2') { this.aux_2_url = URL.createObjectURL(event.target.files[0])}
+            const fieldId = event.target.id
+            const img_url = URL.createObjectURL(img_data)
+
+            const imagebox = document.getElementById('image-box')
+            const crop_btn = document.getElementById('crop-btn')
+            const inputField = document.getElementById(fieldId)
+
+            imagebox.innerHTML = `<img src="${ img_url }" id="image" style="width:100%;"></img>`
+            const image = document.getElementById('image')
+            
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+                aspectRatio: 1 / 1,
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                minCropBoxWidth: 200,
+                minCropBoxHeight: 200,
+            })
+
+            crop_btn.addEventListener('click', ()=>{
+                cropper.getCroppedCanvas().toBlob((blob)=>{
+                  
+                  let file = new File([blob], img_data.name,{type:"image/*", lastModified:new Date().getTime()});
+                  let container = new DataTransfer();
+                  container.items.add(file);
+                  inputField.files = container.files;
+        
+                  document.getElementById('image-box').style.display = 'none'
+                  document.getElementById('crop-btn').style.display = 'none'
+                  document.getElementById('confirm-btn').style.display = 'block'
+
+                  const url_cropped = URL.createObjectURL(file)
+                  this.photos.push(file)
+                  if (fieldName == 'avatar') { this.avatar_url = url_cropped }
+                  if (fieldName == 'aux-1') { this.aux_1_url = url_cropped }
+                  if (fieldName == 'aux-2') { this.aux_2_url = url_cropped }
+        
+                }, img_data.type, 0.7);
+            });
         }
     },
     template: `
@@ -102,7 +145,14 @@ export default {
                 <img v-if="aux_2_url" :src="aux_2_url" alt="Просмотр дополнительного фото" class="img-fluid img-thumbnail">
             </div>
         </div>
-        <input type="submit" class="form-control btn btn-outline-info" value="Добавить">
+
+        <div style="position: absolute; top: 15px;">
+            <div id="image-box" class="image-container"></div>
+            <button class="btn btn-info" id="crop-btn" style="width: 100%; margin-top: 10px; display: none;" type="button">Образать</button>  
+        </div>
+        
+        <button class="btn btn-outline-info" id="confirm-btn" style="width: 100%; margin-top: 10px;" type="submit">Post</button>
+        <!-- <input type="submit" class="form-control btn btn-outline-info" value="Добавить"> -->
     </form>
     `
 }
