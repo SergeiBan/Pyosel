@@ -22,14 +22,17 @@ class Animal(models.Model):
     description = models.TextField(max_length=2000, blank=True, null=True)
     color = models.CharField(max_length=32, blank=True, null=True)
 
-    on_sale = models.BooleanField(default=False)
     price = models.IntegerField(blank=True, null=True)
-    free_to_take = models.BooleanField(default=False)
 
-    lost = models.BooleanField(default=False)
-    found = models.BooleanField(default=False)
-
-    # avatar = models.ImageField(upload_to='animals')
+    STATUS_OPTIONS = (
+        ('boasting', 'Просто хвастаюсь'),
+        ('free_to_take', 'Отдается'),
+        ('on_sale', 'Продается'),
+        ('lost', 'Потеряшка'),
+        ('found', 'Найденыш')
+    )
+    status = models.CharField(
+        max_length=16, choices=STATUS_OPTIONS, default='boasting')
 
     def __str__(self):
         return self.name

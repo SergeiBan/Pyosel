@@ -151,7 +151,7 @@ export default {
             <button class="btn btn-info" id="crop-btn" style="width: 100%; margin-top: 10px; display: none;" type="button">Образать</button>  
         </div>
         
-        <button class="btn btn-outline-info" id="confirm-btn" style="width: 100%; margin-top: 10px;" type="submit">Post</button>
+        <button class="btn btn-outline-info" id="confirm-btn" style="width: 100%; margin-top: 10px;" type="submit">Добавить</button>
         <!-- <input type="submit" class="form-control btn btn-outline-info" value="Добавить"> -->
     </form>
     `
