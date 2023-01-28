@@ -28,27 +28,22 @@ class AnimalSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # uploaded = self.context['request'].data['photos']
-        uploaded = validated_data.pop('images')
+        uploaded = validated_data.pop('images', None)
         print(uploaded)
         animal = Animal.objects.create(**validated_data)
 
         photo_data = []
         if uploaded:
-            for photo in photos:
+            for photo in uploaded:
                 photo_data.append(AnimalPhoto(animal=animal, photo=photo))
 
         AnimalPhoto.objects.bulk_create(photo_data)
 
-        if avatar:
-            AnimalPhoto.objects.create(animal=animal, photo=photos)
-        if photos:
-            AnimalPhoto.objects.create(animal=animal, photo=photos)
         return animal
 
     def update(self, instance, validated_data):
-        photos = validated_data.pop('photos', None)
+        uploaded = validated_data.pop('images', None)
         instance.update(**validated_data)
-        # animal = instance(**validated_data)
 
         if photos:
             AnimalPhoto.objects.all().delete()

@@ -3,6 +3,13 @@ export default {
         return {
             
         }
-    }
+    },
+    mounted() {
+
+    },
+    template: `
+    
+    
+    `
     
 }

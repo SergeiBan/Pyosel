@@ -9,11 +9,8 @@ export default {
             breed: null,
             description: null,
             color: null,
-            on_sale: null,
             price: null,
-            free_to_take: null,
-            lost: null,
-            found: null,
+            status: null,
             photos: [],
             avatar_url: null,
             aux_1_url: null,
@@ -126,6 +123,14 @@ export default {
             <option value="cats">Кошки</option>
         </select>
         <input v-model="name" class="form-control mb-4" placeholder="Кличка" required>
+        <select v-model="status" class="form-select mb-2" required>
+            <option selected disabled value="">Статус</option>
+            <option value="boasting">Просто хвастаюсь</option>
+            <option value="free_to_take">В хорошие руки</option>
+            <option value="on_sale">Продается</option>
+            <option value="lost">Потерялся</option>
+            <option value="found">Найден</option>
+        </select>
 
         <h2>Необязательные поля</h2>
         <div class="row">
