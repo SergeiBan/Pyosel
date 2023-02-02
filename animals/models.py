@@ -34,6 +34,9 @@ class Animal(models.Model):
     status = models.CharField(
         max_length=16, choices=STATUS_OPTIONS, default='boasting')
 
+    avatar = models.ImageField(upload_to='animals', blank=True, null=True)
+    aux_photo = models.ImageField(upload_to='animals', blank=True, null=True)
+
     def __str__(self):
         return self.name
 

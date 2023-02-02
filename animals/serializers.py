@@ -14,17 +14,19 @@ class AnimalPhotoSerializer(serializers.ModelSerializer):
 class AnimalSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
+    avatar = serializers.ImageField(required=False)
+    aux_photo = serializers.ImageField(required=False)
 
     class Meta:
         model = Animal
         fields = (
             'pk', 'city', 'owner', 'parent', 'species', 'name', 'breed',
-            'description', 'color', 'price', 'status'
+            'description', 'color', 'price', 'status', 'avatar', 'aux_photo'
         )
         validators = [
             UniqueTogetherValidator(
                 queryset=model.objects.all(),
                 fields=('owner', 'name', 'species'),
-                message='У вас уже есть животное с такой кличкой'
+                message='У вас уже есть подобное животное с такой же кличкой'
             )
         ]

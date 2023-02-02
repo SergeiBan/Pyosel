@@ -12,55 +12,37 @@ export default {
             price: null,
             status: null,
             avatar: null,
-            aux: null,
+            auxPhoto: null,
             avatar_url: null,
-            aux_url: null,
+            auxPhoto_url: null,
             token: window.localStorage.getItem('token'),
             errors: null
         }
     },
     methods: {
         async add_submit(e) {
-            // let data = new FormData()
-            // data.append('city', this.city)
-            // data.append('species', this.species)
-            // data.append('name', this.name)
-            // data.append('status', this.status),
-            // data.append('images', this.photos[0])
-            // data.append('images', this.photos[1])
-
-            const animalOptions = {
-                method: "POST",
-                headers: {"Authorization": `Token ${this.token}`, "Content-Type": "application/json"},
-                body: JSON.stringify({
-                    "city": this.city,
-                    "species": this.species,
-                    "name": this.name,
-                })
-            }
-            
-            const response = await fetch('/api/v1/animals/', animalOptions)
-            const response_json = await response.json()
-
-            if (response['status'] != 201) {
-                this.errors = Object.values(response_json)
-                return
-            }
 
             let data = new FormData()
-            const animalPk = parseInt(response_json['pk'])
-            data.append('animal', animalPk)
-            data.append('photo', this.avatar)
-            data.append('is_avatar', true)
+            data.append('city', this.city)
+            data.append('species', this.species)
+            data.append('name', this.name)
+            data.append('status', this.status)
+            data.append('avatar', this.avatar)
+            data.append('aux_photo', this.auxPhoto)
 
-            const photoOptions = {
+            const requestOptions = {
                 method: "POST",
                 headers: {"Authorization": `Token ${this.token}`},
                 body: data
             }
 
-            const photosResponse = await fetch('/api/v1/photos/', photoOptions)
-            const photosResponse_json = await photosResponse.json()
+            const response = await fetch('/api/v1/animals/', requestOptions)
+            const responseJson = await response.json()
+            if (response['status'] != 201) {
+                this.errors = Object.values(responseJson)
+                return
+            }
+            this.$router.push('/')
             
         },
         add_photos(event) {
@@ -105,9 +87,8 @@ export default {
                   document.getElementById('confirm-btn').style.display = 'block'
 
                   const url_cropped = URL.createObjectURL(file)
-                  this.avatar = file
-                  if (fieldName == 'avatar') { this.avatar_url = url_cropped }
-                  if (fieldName == 'aux') { this.aux_url = url_cropped }
+                  if (fieldName == 'avatar') { this.avatar_url = url_cropped; this.avatar = file }
+                  if (fieldName == 'aux_photo') { this.auxPhoto_url = url_cropped; this.auxPhoto = file }
         
                 }, img_data.type, 0.7);
             });
@@ -126,13 +107,9 @@ export default {
         </div>
 
         <h2>Обязательные поля</h2>
+
         <input v-model="city" class="form-control mb-2" placeholder="Город" required>
-        <select v-model="species" class="form-select mb-2" required>
-            <option disabled value="">Категория</option>
-            <option value="dogs">Собаки</option>
-            <option value="cats">Кошки</option>
-        </select>
-        <input v-model="name" class="form-control mb-4" placeholder="Кличка" required>
+
         <select v-model="status" class="form-select mb-2" required>
             <option selected disabled value="">Статус</option>
             <option value="boasting">Просто хвастаюсь</option>
@@ -141,6 +118,17 @@ export default {
             <option value="lost">Потерялся</option>
             <option value="found">Найден</option>
         </select>
+
+        <input class="form-control mb-2" v-model="price" v-if="status === 'on_sale'" type="number" placeholder="Цена ₽">
+        <input v-model="name" class="form-control mb-4" v-if="status !== 'found'" placeholder="Кличка" required>
+
+        <select v-model="species" class="form-select mb-2" required>
+            <option disabled value="">Категория</option>
+            <option value="dogs">Собаки</option>
+            <option value="cats">Кошки</option>
+        </select>
+        
+        
 
         <h2>Необязательные поля</h2>
         <div class="row">
@@ -151,8 +139,8 @@ export default {
             </div>
             <div class="col-md-6">
                 <label for="auxiliary">Дополнительное фото</label>
-                <input id="auxiliary" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="aux">
-                <img v-if="aux_url" :src="aux_url" alt="Предпросмотр дополнительного фото" class="img-fluid img-thumbnail">
+                <input id="auxiliary" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="aux_photo">
+                <img v-if="auxPhoto_url" :src="auxPhoto_url" alt="Предпросмотр дополнительного фото" class="img-fluid img-thumbnail">
             </div>
         </div>
 
