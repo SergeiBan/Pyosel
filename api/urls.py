@@ -2,13 +2,14 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from knox import views as knox_views
 from users.views import LoginView, RegisterViewSet, UserViewSet
-from animals.views import AnimalViewSet, FoundViewSet
+from animals.views import AnimalViewSet, FoundViewSet, AnimalPhotoViewSet
 
 
 router = DefaultRouter()
 router.register('register', RegisterViewSet, basename='register')
 router.register('users', UserViewSet, basename='user')
 router.register('animals', AnimalViewSet, basename='animal')
+router.register('photos', AnimalPhotoViewSet, basename='photo'),
 router.register('found', FoundViewSet, basename='found')
 
 

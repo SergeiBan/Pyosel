@@ -11,45 +11,56 @@ export default {
             color: null,
             price: null,
             status: null,
-            photos: [],
+            avatar: null,
+            aux: null,
             avatar_url: null,
-            aux_1_url: null,
-            aux_2_url: null,
+            aux_url: null,
             token: window.localStorage.getItem('token'),
             errors: null
         }
     },
     methods: {
         async add_submit(e) {
-            let data = new FormData()
-            data.append('city', this.city)
-            data.append('species', this.species)
-            data.append('name', this.name)
-            data.append('images', this.photos[0])
-            data.append('images', this.photos[1])
+            // let data = new FormData()
+            // data.append('city', this.city)
+            // data.append('species', this.species)
+            // data.append('name', this.name)
+            // data.append('status', this.status),
+            // data.append('images', this.photos[0])
+            // data.append('images', this.photos[1])
 
-            const requestOptions = {
+            const animalOptions = {
+                method: "POST",
+                headers: {"Authorization": `Token ${this.token}`, "Content-Type": "application/json"},
+                body: JSON.stringify({
+                    "city": this.city,
+                    "species": this.species,
+                    "name": this.name,
+                })
+            }
+            
+            const response = await fetch('/api/v1/animals/', animalOptions)
+            const response_json = await response.json()
+
+            if (response['status'] != 201) {
+                this.errors = Object.values(response_json)
+                return
+            }
+
+            let data = new FormData()
+            const animalPk = parseInt(response_json['pk'])
+            data.append('animal', animalPk)
+            data.append('photo', this.avatar)
+            data.append('is_avatar', true)
+
+            const photoOptions = {
                 method: "POST",
                 headers: {"Authorization": `Token ${this.token}`},
                 body: data
-                // body: JSON.stringify({
-                //     "city": this.city,
-                //     "species": this.species,
-                //     "name": this.name,
-                //     "photos": this.photos
-                // })
             }
-            
-            const response = await fetch('/api/v1/animals/', requestOptions)
-            
-            const response_json = await response.json()
-            console.log(response_json)
 
-            if (response['status'] != 200) {
-                this.login_errors = Object.values(response_json)
-            } else {
-                this.$router.push('/')
-            }
+            const photosResponse = await fetch('/api/v1/photos/', photoOptions)
+            const photosResponse_json = await photosResponse.json()
             
         },
         add_photos(event) {
@@ -94,10 +105,9 @@ export default {
                   document.getElementById('confirm-btn').style.display = 'block'
 
                   const url_cropped = URL.createObjectURL(file)
-                  this.photos.push(file)
+                  this.avatar = file
                   if (fieldName == 'avatar') { this.avatar_url = url_cropped }
-                  if (fieldName == 'aux-1') { this.aux_1_url = url_cropped }
-                  if (fieldName == 'aux-2') { this.aux_2_url = url_cropped }
+                  if (fieldName == 'aux') { this.aux_url = url_cropped }
         
                 }, img_data.type, 0.7);
             });
@@ -134,20 +144,15 @@ export default {
 
         <h2>Необязательные поля</h2>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label for="avatar">Главное фото</label>
                 <input id="avatar" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="avatar">
                 <img v-if="avatar_url" :src="avatar_url" alt="Просмотр главного фото" class="img-fluid img-thumbnail">
             </div>
-            <div class="col-md-4">
-                <label for="auxiliary-1">Вспомогательное фото</label>
-                <input id="auxiliary-1" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="aux-1">
-                <img v-if="aux_1_url" :src="aux_1_url" alt="Просмотр дополнительного фото" class="img-fluid img-thumbnail">
-            </div>
-            <div class="col-md-4">
-                <label for="auxiliary-2">Вспомогательное фото</label>
-                <input id="auxiliary-2" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="aux-2">
-                <img v-if="aux_2_url" :src="aux_2_url" alt="Просмотр дополнительного фото" class="img-fluid img-thumbnail">
+            <div class="col-md-6">
+                <label for="auxiliary">Дополнительное фото</label>
+                <input id="auxiliary" type="file" accept="image/*" @change="add_photos" class="form-control mb-2" name="aux">
+                <img v-if="aux_url" :src="aux_url" alt="Предпросмотр дополнительного фото" class="img-fluid img-thumbnail">
             </div>
         </div>
 
