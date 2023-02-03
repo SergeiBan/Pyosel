@@ -127,8 +127,6 @@ export default {
             <option value="dogs">Собаки</option>
             <option value="cats">Кошки</option>
         </select>
-        
-        
 
         <h2>Необязательные поля</h2>
         <div class="row">
