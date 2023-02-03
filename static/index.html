@@ -52,14 +52,14 @@
     import LoginComp from '/static/js/login.js'
     import AddComp from '/static/js/add.js'
     import FoundComp from '/static/js/found.js'
+    import HomeComp from '/static/js/home.js'
 
-    const Home = { template: '<div class="col-6 col-md-3">Фото</div>' }
     const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
     const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
     const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
 
     const routes = [
-        { path: '/', component: Home },
+        { path: '/', component: HomeComp },
         { path: '/found', component: FoundComp },
         { path: '/free', component: Free },
         { path: '/buy', component: Buy },
