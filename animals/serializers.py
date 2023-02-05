@@ -1,27 +1,21 @@
 from rest_framework import serializers
-from animals.models import Animal, AnimalPhoto
+from animals.models import Animal
 from rest_framework.validators import UniqueTogetherValidator
-
-
-class AnimalPhotoSerializer(serializers.ModelSerializer):
-    animal = serializers.PrimaryKeyRelatedField(queryset=Animal.objects.all())
-
-    class Meta:
-        model = AnimalPhoto
-        fields = ('animal', 'photo', 'is_avatar')
 
 
 class AnimalSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
     avatar = serializers.ImageField(required=False)
+    avatar_thumbnail = serializers.ImageField(read_only=True)
     aux_photo = serializers.ImageField(required=False)
 
     class Meta:
         model = Animal
         fields = (
             'pk', 'city', 'owner', 'parent', 'species', 'name', 'breed',
-            'description', 'color', 'price', 'status', 'avatar', 'aux_photo'
+            'description', 'color', 'price', 'status', 'avatar',
+            'avatar_thumbnail', 'aux_photo'
         )
         validators = [
             UniqueTogetherValidator(
@@ -30,3 +24,9 @@ class AnimalSerializer(serializers.ModelSerializer):
                 message='У вас уже есть подобное животное с такой же кличкой'
             )
         ]
+
+    def create(self, validated_data):
+        new_animal = Animal.objects.create(
+            avatar_thumbnail=validated_data['avatar'], **validated_data)
+        print(new_animal.avatar_thumbnail)
+        return new_animal

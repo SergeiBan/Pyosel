@@ -28,10 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'knox',
     'users.apps.UsersConfig',
     'api.apps.ApiConfig',
-    'animals.apps.AnimalsConfig'
+    'animals.apps.AnimalsConfig',
 ]
 
 
@@ -127,6 +128,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'knox.auth.TokenAuthentication'
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
 

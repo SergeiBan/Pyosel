@@ -35,8 +35,8 @@ export default {
                 headers: {"Authorization": `Token ${this.token}`},
                 body: data
             }
-
             const response = await fetch('/api/v1/animals/', requestOptions)
+
             const responseJson = await response.json()
             if (response['status'] != 201) {
                 this.errors = Object.values(responseJson)
