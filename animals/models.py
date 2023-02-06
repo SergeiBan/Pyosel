@@ -6,13 +6,18 @@ from django_resized import ResizedImageField
 User = get_user_model()
 
 
+class LostProfile(models.Model):
+    loss_city_part = models.CharField(max_length=128, blank=True, null=True)
+    loss_street = models.CharField(max_length=128, blank=True, null=True)
+    loss_date = models.DateField()
+    bounty = models.IntegerField(blank=True, null=True)
+
+
 class Animal(models.Model):
     city = models.CharField(max_length=128)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='animals')
-    parent = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, related_name='offspring',
-        blank=True, null=True)
+
     SPECIES_OPTIONS = (
         ('dogs', 'Собаки'),
         ('cats', 'Кошки')
@@ -23,48 +28,21 @@ class Animal(models.Model):
     hue = models.CharField(max_length=32, blank=True, null=True)
     size = models.CharField(max_length=32)
 
-    price = models.IntegerField(blank=True, null=True)
+    # price = models.IntegerField(blank=True, null=True)
 
-    STATUS_OPTIONS = (
-        ('boasting', 'Просто хвастаюсь'),
-        ('free_to_take', 'Отдается'),
-        ('on_sale', 'Продается'),
-        ('lost', 'Потеряшка'),
-        ('found', 'Найденыш')
-    )
-    status = models.CharField(
-        max_length=16, choices=STATUS_OPTIONS, default='boasting')
-
-    # avatar = models.ImageField(upload_to='animals', blank=True, null=True)
     avatar = ResizedImageField(
         size=[1920, 1080], upload_to='animals', quality=50, blank=True, null=True)
     avatar_thumbnail = ResizedImageField(
         size=[360, 360], upload_to='animals', quality=50, blank=True, null=True)
     aux_photo = models.ImageField(upload_to='animals', blank=True, null=True)
 
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['owner', 'name', 'species'],
-                name='unique_owner_name_species'
-            )
-        ]
+    lost_profile = models.OneToOneField(LostProfile, on_delete=models.SET_NULL, null=True, blank=True)
 
 
-class OwnedAnimal(models.Model):
+class PersonalProfile(models.Model):
     nickname = models.CharField(max_length=32)
     age = models.CharField(max_length=32)
+    parent = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, related_name='offspring',
+        blank=True, null=True)
 
-    class Meta:
-        abstract = True
-
-
-class LostProfile(OwnedAnimal):
-    animal = models.OneToOneField(Animal, on_delete=models.CASCADE)
-    loss_city_part = models.CharField(max_length=128, blank=True, null=True)
-    loss_street = models.CharField(max_length=128, blank=True, null=True)
-    loss_date = models.DateField()
-    bounty = models.IntegerField(blank=True, null=True)

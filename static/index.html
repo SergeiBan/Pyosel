@@ -91,15 +91,14 @@
             }
         },
         mounted() {
-            const token_expiry = localStorage.getItem('token_expiry')
-            const expiry_date = new Date(token_expiry)
-            const now = new Date()
-            const expiry_diff = now - expiry_date
-            if (expiry_date && expiry_diff < 0) { this.is_logged = true }
-            else { 
+            if (localStorage.getItem('token_expiry') &&
+                new Date() - localStorage.getItem('token_expiry' < 0)) {
+                    this.is_logged = true
+            } else { 
                 localStorage.removeItem('token')
                 localStorage.removeItem('token_expiry')
-                this.is_logged = false }
+                this.is_logged = false
+            }
         }
     })
 

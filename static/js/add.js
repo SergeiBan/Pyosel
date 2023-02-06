@@ -5,7 +5,7 @@ export default {
             city: null,
             parent: null,
             species: null,
-            name: null,
+            nickname: null,
             breed: null,
             description: null,
             color: null,
@@ -15,6 +15,12 @@ export default {
             auxPhoto: null,
             avatar_url: null,
             auxPhoto_url: null,
+
+            loss_city_part: null,
+            loss_street: null,
+            loss_date: null,
+            bounty: null,
+
             token: window.localStorage.getItem('token'),
             errors: null
         }
@@ -25,10 +31,19 @@ export default {
             let data = new FormData()
             data.append('city', this.city)
             data.append('species', this.species)
-            data.append('name', this.name)
+            data.append('nickname', this.nickname)
             data.append('status', this.status)
             data.append('avatar', this.avatar)
             data.append('aux_photo', this.auxPhoto)
+
+            if (this.status === 'lost') {
+                data.append('lost_profile', JSON.stringify({
+                    loss_city_part: this.loss_city_part,
+                    loss_street: this.loss_street,
+                    loss_date: this.loss_date,
+                    bounty: this.bounty
+                }))
+            }
 
             const requestOptions = {
                 method: "POST",
@@ -42,6 +57,7 @@ export default {
                 this.errors = Object.values(responseJson)
                 return
             }
+            console.log(responseJson['pk'])
             this.$router.push('/')
             
         },
@@ -119,8 +135,16 @@ export default {
             <option value="found">Найден</option>
         </select>
 
+        <div v-if="status === 'lost'">
+        <p class="mt-2 mb-2">Необязательно, но полезно. Где и когда потерялось животное, есть ли награда нашедшему?</p>
+        <input v-model="loss_city_part" class="form-control mb-2" placeholder="Часть города">
+        <input v-model="loss_street" class="form-control mb-2" placeholder="Улица">
+        <input v-model="loss_date" class="form-control mb-2" placeholder="Дата" type="date">
+        <input v-model="bounty" class="form-control mb-4" placeholder="Награда ₽, если есть">
+        </div>
+
         <input class="form-control mb-2" v-model="price" v-if="status === 'on_sale'" type="number" placeholder="Цена ₽">
-        <input v-model="name" class="form-control mb-4" v-if="status !== 'found'" placeholder="Кличка" required>
+        <input v-model="nickname" class="form-control mb-4" v-if="status !== 'found'" placeholder="Кличка" required>
 
         <select v-model="species" class="form-select mb-2" required>
             <option disabled value="">Категория</option>
