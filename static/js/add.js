@@ -5,7 +5,7 @@ export default {
             city: null,
             parent: null,
             species: null,
-            nickname: null,
+            
             breed: null,
             description: null,
             color: null,
@@ -19,7 +19,13 @@ export default {
             loss_city_part: null,
             loss_street: null,
             loss_date: null,
+            nickname: null,
+            age: null,
             bounty: null,
+
+            found_city_part: null,
+            found_street: null,
+            found_date: null,
 
             token: window.localStorage.getItem('token'),
             errors: null
@@ -36,28 +42,42 @@ export default {
             data.append('avatar', this.avatar)
             data.append('aux_photo', this.auxPhoto)
 
-            if (this.status === 'lost') {
-                data.append('lost_profile', JSON.stringify({
-                    loss_city_part: this.loss_city_part,
-                    loss_street: this.loss_street,
-                    loss_date: this.loss_date,
-                    bounty: this.bounty
-                }))
-            }
-
             const requestOptions = {
                 method: "POST",
                 headers: {"Authorization": `Token ${this.token}`},
                 body: data
             }
             const response = await fetch('/api/v1/animals/', requestOptions)
-
             const responseJson = await response.json()
             if (response['status'] != 201) {
                 this.errors = Object.values(responseJson)
                 return
             }
-            console.log(responseJson['pk'])
+
+            if (this.status === 'lost') {
+                const dataLost = JSON.stringify({
+                    animal: responseJson['pk'],
+                    loss_city_part: this.loss_city_part,
+                    loss_street: this.loss_street,
+                    loss_date: this.loss_date,
+                    bounty: this.bounty
+                })
+
+                const requestOptionsLost = {
+                    method: "POST",
+                    headers: {"Authorization": `Token ${this.token}`, 'Content-Type': 'application/json'},
+                    body: dataLost
+                }
+
+                const responseLost = await fetch('/api/v1/lost_profiles/', requestOptionsLost)
+                const responseLostJson = await responseLost.json()
+                console.log(responseLostJson)
+                if (responseLost['status'] != 201) {
+                    this.errors = Object.values(responseLostJson)
+                    return
+                }
+            }
+
             this.$router.push('/')
             
         },
@@ -67,6 +87,7 @@ export default {
             const fieldName = event.target.name
             const fieldId = event.target.id
             const img_url = URL.createObjectURL(img_data)
+            console.log(img_url)
 
             const imagebox = document.getElementById('image-box')
             const crop_btn = document.getElementById('crop-btn')
@@ -106,7 +127,7 @@ export default {
                   if (fieldName == 'avatar') { this.avatar_url = url_cropped; this.avatar = file }
                   if (fieldName == 'aux_photo') { this.auxPhoto_url = url_cropped; this.auxPhoto = file }
         
-                }, img_data.type, 0.7);
+                }, img_data.type, 0.6);
             });
         }
     },
@@ -136,11 +157,18 @@ export default {
         </select>
 
         <div v-if="status === 'lost'">
-        <p class="mt-2 mb-2">Необязательно, но полезно. Где и когда потерялось животное, есть ли награда нашедшему?</p>
-        <input v-model="loss_city_part" class="form-control mb-2" placeholder="Часть города">
-        <input v-model="loss_street" class="form-control mb-2" placeholder="Улица">
-        <input v-model="loss_date" class="form-control mb-2" placeholder="Дата" type="date">
-        <input v-model="bounty" class="form-control mb-4" placeholder="Награда ₽, если есть">
+            <p class="mt-2 mb-2">Необязательно, но полезно. Где и когда потерялось животное, есть ли награда нашедшему?</p>
+            <input v-model="loss_city_part" class="form-control mb-2" placeholder="Часть/район города">
+            <input v-model="loss_street" class="form-control mb-2" placeholder="Улица">
+            <input v-model="loss_date" class="form-control mb-2" placeholder="Дата" type="date">
+            <input v-model="bounty" class="form-control mb-4" placeholder="Награда ₽, если есть">
+        </div>
+
+        <div v-if="status === 'found'">
+            <p class="mt-2 mb-2">Необязательно, но полезно. Где и когда нашлось животное?</p>
+            <input v-model="found_city_part" class="form-control mb-2" placeholder="Часть/район города">
+            <input v-model="found_street" class="form-control mb-2" placeholder="Улица">
+            <input v-model="found_date" class="form-control mb-2" placeholder="Дата" type="date">
         </div>
 
         <input class="form-control mb-2" v-model="price" v-if="status === 'on_sale'" type="number" placeholder="Цена ₽">

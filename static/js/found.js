@@ -12,7 +12,6 @@ export default {
         const requestOptions = { method: "GET" }
         const response = await fetch(this.found_url, requestOptions)
         this.animals = await response.json()
-        console.log(this.city)
     },
     template: `
     <div v-for="animal in animals" :key="animal.id" class="card col-md-6 col-xl-3">

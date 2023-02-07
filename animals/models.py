@@ -6,13 +6,6 @@ from django_resized import ResizedImageField
 User = get_user_model()
 
 
-class LostProfile(models.Model):
-    loss_city_part = models.CharField(max_length=128, blank=True, null=True)
-    loss_street = models.CharField(max_length=128, blank=True, null=True)
-    loss_date = models.DateField()
-    bounty = models.IntegerField(blank=True, null=True)
-
-
 class Animal(models.Model):
     city = models.CharField(max_length=128)
     owner = models.ForeignKey(
@@ -36,7 +29,22 @@ class Animal(models.Model):
         size=[360, 360], upload_to='animals', quality=50, blank=True, null=True)
     aux_photo = models.ImageField(upload_to='animals', blank=True, null=True)
 
-    lost_profile = models.OneToOneField(LostProfile, on_delete=models.SET_NULL, null=True, blank=True)
+
+class LostProfile(models.Model):
+    animal = models.OneToOneField(
+        Animal, on_delete=models.CASCADE, related_name='lost_profile')
+    loss_city_part = models.CharField(max_length=128, blank=True, null=True)
+    loss_street = models.CharField(max_length=128, blank=True, null=True)
+    loss_date = models.DateField(blank=True, null=True)
+    bounty = models.CharField(max_length=128, blank=True, null=True)
+
+
+class FoundProfile(models.Model):
+    animal = models.OneToOneField(
+        Animal, on_delete=models.CASCADE, related_name='found_profile')
+    found_city_part = models.CharField(max_length=128, blank=True, null=True)
+    found_street = models.CharField(max_length=128, blank=True, null=True)
+    found_date = models.DateField(blank=True, null=True)
 
 
 class PersonalProfile(models.Model):

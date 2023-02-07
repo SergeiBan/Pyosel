@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from animals.models import Animal, LostProfile
-from animals.serializers import AnimalSerializer, LostProfileSerializer
+from animals.serializers import AnimalSerializer, LostProfileSerializer, OutputLostProfileSerializer
 from animals.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import AllowAny
 
@@ -22,8 +22,15 @@ class FoundViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LostProfileViewSet(viewsets.ModelViewSet):
-    queryset = LostProfile.objects.all()
+    queryset = LostProfile.objects.select_related('animal').all()
     serializer_class = LostProfileSerializer
+    permission_classes = (AllowAny,)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method in ('GET', 'LIST'):
+            return OutputLostProfileSerializer
+        else:
+            return LostProfileSerializer

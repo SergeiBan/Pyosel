@@ -16,6 +16,7 @@
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
                     <router-link to="/" class="nav-item nav-link">Пёсель</router-link>
+                    <router-link to="/lost" class="nav-item nav-link">Потеряшки</router-link>
                     <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
                     <router-link to="/free" class="nav-item nav-link">Бесплатные</router-link>
                     <router-link to="/buy" class="nav-item nav-link">Купить</router-link>
@@ -39,6 +40,7 @@
                 </nav>
             </div>
         </div> <!-- row -->
+
         <div class="row">
             <div class="col">
                 <input type="text" placeholder="Город" class="form-control mb-4" @blur="(e) => {city = e.target.value;}">
@@ -57,8 +59,8 @@
     import AddComp from '/static/js/add.js'
     import FoundComp from '/static/js/found.js'
     import HomeComp from '/static/js/home.js'
+    import LostComp from '/static/js/lost.js'
 
-    const Found = { template: '<div class="col-6 col-md-3">Найденные</div>' }
     const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
     const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
 
@@ -69,7 +71,8 @@
         { path: '/buy', component: Buy },
         { path: '/login', component: LoginComp },
         { path: '/register', component: RegisterComp },
-        { path: '/add', component: AddComp }
+        { path: '/add', component: AddComp },
+        { path: '/lost', component: LostComp }
     ]
 
     const router = VueRouter.createRouter({
