@@ -16,10 +16,8 @@
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
                     <router-link to="/" class="nav-item nav-link">Пёсель</router-link>
-                    <router-link to="/lost" class="nav-item nav-link">Потеряшки</router-link>
-                    <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
-                    <router-link to="/free" class="nav-item nav-link">Бесплатные</router-link>
-                    <router-link to="/buy" class="nav-item nav-link">Купить</router-link>
+                    <router-link to="/lost_profiles" class="nav-item nav-link">Потеряшки</router-link>
+                    <router-link to="/found_profiles" class="nav-item nav-link">Найдёныши</router-link>
 
                     <div v-if="is_logged" class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Управление</a>
@@ -66,13 +64,11 @@
 
     const routes = [
         { path: '/', component: HomeComp },
-        { path: '/found', component: FoundComp },
-        { path: '/free', component: Free },
-        { path: '/buy', component: Buy },
+        { path: '/found_profiles', component: FoundComp },
         { path: '/login', component: LoginComp },
         { path: '/register', component: RegisterComp },
         { path: '/add', component: AddComp },
-        { path: '/lost', component: LostComp }
+        { path: '/lost_profiles', component: LostComp }
     ]
 
     const router = VueRouter.createRouter({
@@ -96,8 +92,9 @@
         mounted() {
             if (localStorage.getItem('token_expiry') &&
                 new Date() - localStorage.getItem('token_expiry' < 0)) {
+                    console.log((new Date() - localStorage.getItem('token_expiry')) < 0)
                     this.is_logged = true
-            } else { 
+            } else {
                 localStorage.removeItem('token')
                 localStorage.removeItem('token_expiry')
                 this.is_logged = false

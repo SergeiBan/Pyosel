@@ -1,9 +1,6 @@
 from rest_framework import serializers
-from animals.models import Animal, LostProfile
+from animals.models import Animal, LostProfile, FoundProfile
 from rest_framework.validators import UniqueTogetherValidator
-
-
-
 
 
 class AnimalSerializer(serializers.ModelSerializer):
@@ -33,24 +30,23 @@ class AnimalSerializer(serializers.ModelSerializer):
 
 class LostProfileSerializer(serializers.ModelSerializer):
     animal = serializers.PrimaryKeyRelatedField(queryset=Animal.objects.all())
-    loss_city_part = serializers.CharField(max_length=128, required=False, allow_null=True)
-    loss_street = serializers.CharField(max_length=128, required=False, allow_null=True)
+    loss_city_part = serializers.CharField(
+        max_length=128, required=False, allow_null=True)
+    loss_street = serializers.CharField(
+        max_length=128, required=False, allow_null=True)
     loss_date = serializers.DateField(required=False, allow_null=True)
     bounty = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = LostProfile
         fields = (
-            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty'
+            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty',
+            'nickname'
         )
 
 
 class OutputLostProfileSerializer(serializers.ModelSerializer):
     animal = AnimalSerializer()
-    loss_city_part = serializers.CharField(max_length=128, required=False, allow_null=True)
-    loss_street = serializers.CharField(max_length=128, required=False, allow_null=True)
-    loss_date = serializers.DateField(required=False, allow_null=True)
-    bounty = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = LostProfile
@@ -66,21 +62,17 @@ class FoundProfileSerializer(serializers.ModelSerializer):
     found_date = serializers.DateField(required=False, allow_null=True)
 
     class Meta:
-        model = LostProfile
+        model = FoundProfile
         fields = (
-            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty'
+            'animal', 'found_city_part', 'found_street', 'found_date'
         )
 
 
 class OutputFoundProfileSerializer(serializers.ModelSerializer):
     animal = AnimalSerializer()
-    loss_city_part = serializers.CharField(max_length=128, required=False, allow_null=True)
-    loss_street = serializers.CharField(max_length=128, required=False, allow_null=True)
-    loss_date = serializers.DateField(required=False, allow_null=True)
-    bounty = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
-        model = LostProfile
+        model = FoundProfile
         fields = (
-            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty'
+            'animal', 'found_city_part', 'found_street', 'found_date'
         )

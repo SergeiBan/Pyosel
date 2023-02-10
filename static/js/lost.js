@@ -20,8 +20,7 @@ export default {
             <h5 class="card-title">
                 <span class="badge bg-info">{{ profile.animal.nickname }}</span>{{ profile.animal.city }}
             </h5>
-            <p class="card-text">{{ profile.animal }}
-            </p>
+            <p class="card-text">{{ profile.animal.nickname }}</p>
         </div>
     </div>
     

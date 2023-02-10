@@ -20,8 +20,7 @@ class Animal(models.Model):
     features = models.TextField(max_length=2000, blank=True, null=True)
     hue = models.CharField(max_length=32, blank=True, null=True)
     size = models.CharField(max_length=32)
-
-    # price = models.IntegerField(blank=True, null=True)
+    accessories = models.TextField(max_length=1000, blank=True, null=True)
 
     avatar = ResizedImageField(
         size=[1920, 1080], upload_to='animals', quality=50, blank=True, null=True)
@@ -33,6 +32,7 @@ class Animal(models.Model):
 class LostProfile(models.Model):
     animal = models.OneToOneField(
         Animal, on_delete=models.CASCADE, related_name='lost_profile')
+    nickname = models.CharField(max_length=64)
     loss_city_part = models.CharField(max_length=128, blank=True, null=True)
     loss_street = models.CharField(max_length=128, blank=True, null=True)
     loss_date = models.DateField(blank=True, null=True)
@@ -45,12 +45,3 @@ class FoundProfile(models.Model):
     found_city_part = models.CharField(max_length=128, blank=True, null=True)
     found_street = models.CharField(max_length=128, blank=True, null=True)
     found_date = models.DateField(blank=True, null=True)
-
-
-class PersonalProfile(models.Model):
-    nickname = models.CharField(max_length=32)
-    age = models.CharField(max_length=32)
-    parent = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, related_name='offspring',
-        blank=True, null=True)
-
