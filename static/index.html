@@ -15,7 +15,6 @@
         <div class="row mb-2">
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
-                    <router-link to="/" class="nav-item nav-link">Пёсель</router-link>
                     <router-link to="/lost_profiles" class="nav-item nav-link">Потеряшки</router-link>
                     <router-link to="/found_profiles" class="nav-item nav-link">Найдёныши</router-link>
 
@@ -40,12 +39,7 @@
         </div> <!-- row -->
 
         <div class="row">
-            <div class="col">
-                <input type="text" placeholder="Город" class="form-control mb-4" @blur="(e) => {city = e.target.value;}">
-            </div>
-        </div>
-        <div class="row">
-            <router-view @login="(login_state) => {is_logged = login_state;}" :city="city">
+            <router-view @login="(login_state) => {is_logged = login_state;}">
             </router-view>
         </div>
     </div>
@@ -56,14 +50,12 @@
     import LoginComp from '/static/js/login.js'
     import AddComp from '/static/js/add.js'
     import FoundComp from '/static/js/found.js'
-    import HomeComp from '/static/js/home.js'
     import LostComp from '/static/js/lost.js'
 
     const Free = { template: '<div class="col-6 col-md-3">Бесплатные</div>' }
     const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
 
     const routes = [
-        { path: '/', component: HomeComp },
         { path: '/found_profiles', component: FoundComp },
         { path: '/login', component: LoginComp },
         { path: '/register', component: RegisterComp },
@@ -78,8 +70,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                is_logged: false,
-                city: null
+                is_logged: false
             }
         },
         methods: {
