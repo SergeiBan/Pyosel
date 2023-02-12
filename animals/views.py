@@ -21,7 +21,15 @@ class AnimalViewSet(viewsets.ModelViewSet):
 class LostProfileFilter(filters.FilterSet):
     city = filters.CharFilter(field_name='animal__city', lookup_expr='iexact')
     date = filters.DateFilter(field_name='loss_date', lookup_expr='lte')
-    species = filters.CharFilter(field_name='animal__species', lookup_expr='exact')
+    species = filters.CharFilter(
+        field_name='animal__species', lookup_expr='exact')
+
+
+class FoundProfileFilter(filters.FilterSet):
+    city = filters.CharFilter(field_name='animal__city', lookup_expr='iexact')
+    date = filters.DateFilter(field_name='found_date', lookup_expr='gte')
+    species = filters.CharFilter(
+        field_name='animal__species', lookup_expr='exact')
 
 
 class LostProfileViewSet(viewsets.ModelViewSet):
@@ -41,6 +49,7 @@ class FoundProfileViewSet(viewsets.ModelViewSet):
     queryset = FoundProfile.objects.select_related('animal').all()
     serializer_class = FoundProfileSerializer
     permission_classes = (AllowAny,)
+    filterset_class = FoundProfileFilter
 
     def get_serializer_class(self):
         if self.request.method in ('GET', 'LIST'):

@@ -82,13 +82,14 @@
         },
         mounted() {
             if (localStorage.getItem('token_expiry') &&
-                new Date() - localStorage.getItem('token_expiry' < 0)) {
-                    console.log((new Date() - localStorage.getItem('token_expiry')) < 0)
+                new Date() - localStorage.getItem('token_expiry') < 0) {
+                    console.log(new Date(Date.now()))
                     this.is_logged = true
             } else {
                 localStorage.removeItem('token')
                 localStorage.removeItem('token_expiry')
                 this.is_logged = false
+                console.log('not logged in')
             }
         }
     })

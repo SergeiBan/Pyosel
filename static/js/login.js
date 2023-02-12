@@ -28,7 +28,7 @@ export default {
                 window.localStorage.setItem('token', response_json['token'])
                 window.localStorage.setItem('token_expiry', response_json['expiry'])
                 this.$emit('login', true)
-                this.$router.push('/')
+                this.$router.push('/found_profiles')
             }
             
         }
