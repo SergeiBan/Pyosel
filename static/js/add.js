@@ -1,17 +1,17 @@
 export default {
     data() {
         return {
-            welcome: 'Опишите питомца',
             city: null,
             parent: null,
             species: 'dogs',
+            gender: 'M',
             
             accessories: null,
             breed: null,
             features: null,
             hue: null,
-            price: null,
-            status: 'lost',
+            size: null,
+            status: this.$route.path.split('_')[1],
             avatar: null,
             auxPhoto: null,
             avatar_url: null,
@@ -36,7 +36,9 @@ export default {
             let data = new FormData()
             data.append('city', this.city)
             data.append('species', this.species)
+            data.append('gender', this.gender)
             data.append('status', this.status)
+            data.append('size', this.size)
             data.append('accessories', this.accessories)
             data.append('breed', this.breed)
             data.append('features', this.features)
@@ -101,11 +103,12 @@ export default {
                     return
                 }
             }
-
-            this.$router.push('/')
+            const redirect_url = this.status === 'lost' ? 'found' : 'lost'
+            this.$router.push(redirect_url)
             
         },
         add_photos(event) {
+            console.log(this.status)
             const img_data = event.target.files[0]
             
             const fieldName = event.target.name
@@ -147,7 +150,7 @@ export default {
                   document.getElementById('confirm-btn').style.display = 'block'
 
                   const url_cropped = URL.createObjectURL(file)
-                  if (fieldName == 'avatar') { this.avatar_url = url_cropped; this.avatar = file }
+                  if (fieldName == 'avatar') { this.avatar_url = url_cropped; this.avatar = file; }
                   if (fieldName == 'aux_photo') { this.auxPhoto_url = url_cropped; this.auxPhoto = file }
                   console.log(this.auxPhoto_url)
         
@@ -157,8 +160,6 @@ export default {
     },
     template: `
     <form @submit.prevent="add_submit" enctype="multipart/form-data">
-        <p>{{ welcome }}</p>
-
         <div v-if="errors">
             <div v-for="error in errors" :key="error.id">
                 <small v-for="error_part in error" :key="error_part.id" class="text-primary">
@@ -168,14 +169,16 @@ export default {
         </div>
 
         <h2>Обязательные поля</h2>
+        <p>Опишите питомца</p>
 
-        <select v-model="status" class="form-select mb-2" required>
-            <option value="lost">Потерялся</option>
-            <option value="found">Найден</option>
-        </select>
         <select v-model="species" class="form-select mb-2" required>
             <option value="dogs">Собаки</option>
             <option value="cats">Кошки</option>
+        </select>
+
+        <select v-model="gender" class="form-select mb-2" required>
+            <option value="M">М</option>
+            <option value="F">Ж</option>
         </select>
 
         <input v-model="city" class="form-control mb-2" placeholder="Город" required>
@@ -186,7 +189,7 @@ export default {
         <h2>Необязательные поля</h2>
         <input v-if="status === 'lost'" v-model="bounty" class="form-control mb-4" placeholder="Награда ₽, если есть">
 
-        <p class="mt-2 mb-2">Необязательно, но полезно. Где
+        <p class="my-2">Где
             <span v-if="status === 'found'">нашелся</span>
             <span v-if="status === 'lost'">потерялся</span> питомец?
         </p>
@@ -194,7 +197,8 @@ export default {
         <input v-model="city_part" class="form-control mb-2" placeholder="Часть/район города">
         <input v-model="street" class="form-control mb-2" placeholder="Улица">
 
-        <h3>Особенности</h3>
+        <p>Особенности</p>
+        <input v-model="size" class="form-control mb-2" placeholder="Размер" type="text">
         <input v-model="accessories" class="form-control mb-2" placeholder="Аксессуары" type="text">
         <input v-model="breed" class="form-control mb-2" placeholder="Порода" type="text">
         <input v-model="features" class="form-control mb-2" placeholder="Приметы" type="text" maxlength="2000">

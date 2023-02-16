@@ -16,6 +16,12 @@ class Animal(models.Model):
         ('cats', 'Кошки')
     )
     species = models.CharField(max_length=16, choices=SPECIES_OPTIONS)
+    GENDER_OPTIONS = (
+        ('M', 'М'),
+        ('F', 'Ж')
+    )
+
+    gender = models.CharField(max_length=1, choices=GENDER_OPTIONS)
     breed = models.CharField(max_length=64, blank=True, null=True)
     features = models.TextField(max_length=2000, blank=True, null=True)
     hue = models.CharField(max_length=32, blank=True, null=True)

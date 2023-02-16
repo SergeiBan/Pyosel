@@ -11,18 +11,20 @@
     <title>Пёсель</title>
 </head>
 <body>
-    <div class="container" id="header">
+    <div class="container" id="app">
         <div class="row mb-2">
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
-                    <router-link to="/lost_profiles" class="nav-item nav-link">Потеряшки</router-link>
-                    <router-link to="/found_profiles" class="nav-item nav-link">Найдёныши</router-link>
+                    <router-link to="/add_lost" class="nav-item nav-link">Заявить потерю!</router-link>
+                    <router-link to="/add_found" class="nav-item nav-link">Заявить находку!</router-link>
+                    <router-link to="/lost" class="nav-item nav-link">Потеряшки</router-link>
+                    <router-link to="/found" class="nav-item nav-link">Найдёныши</router-link>
 
                     <div v-if="is_logged" class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Управление</a>
                         <div class="dropdown-menu">
                             <router-link to="/" class="dropdown-item">Профиль</router-link>
-                            <router-link to="/add" class="dropdown-item">Животные</router-link>
+                            <router-link to="/add" class="dropdown-item">Мои объявления</router-link>
                             <router-link to="/" @click="logout" class="dropdown-item">Выйти</router-link>
                         </div>
                     </div>
@@ -39,8 +41,16 @@
         </div> <!-- row -->
 
         <div class="row">
-            <router-view @login="(login_state) => {is_logged = login_state;}">
-            </router-view>
+            <div class="col-md-8 offset-md-2">
+                <div class="row">
+                    <router-view
+                    :key="$route.path"
+                    @login="(login_state) => {is_logged = login_state;}"
+                    
+                    >
+                    </router-view>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -56,21 +66,25 @@
     const Buy = { template: '<div class="col-6 col-md-3">Купить</div>' }
 
     const routes = [
-        { path: '/found_profiles', component: FoundComp },
+        { path: '/add_lost', component: AddComp },
+        { path: '/add_found', component: AddComp },
+        { path: '/found', component: FoundComp },
         { path: '/login', component: LoginComp },
         { path: '/register', component: RegisterComp },
         { path: '/add', component: AddComp },
-        { path: '/lost_profiles', component: LostComp }
+        { path: '/lost', component: LostComp }
     ]
 
     const router = VueRouter.createRouter({
         history: VueRouter.createWebHistory(),
-        routes
+        routes,
+        linkActiveClass: 'active'
     })
     const app = Vue.createApp({
         data() {
             return {
-                is_logged: false
+                is_logged: false,
+                currentPage: null
             }
         },
         methods: {
@@ -81,10 +95,13 @@
             }
         },
         mounted() {
+            const token_expiry = localStorage.getItem('token_expiry')
+
             if (localStorage.getItem('token_expiry') &&
-                new Date() - localStorage.getItem('token_expiry') < 0) {
-                    console.log(new Date(Date.now()))
+                new Date(Date.now()) - new Date(token_expiry) < 0) {
                     this.is_logged = true
+                    console.log('logged in')
+
             } else {
                 localStorage.removeItem('token')
                 localStorage.removeItem('token_expiry')
@@ -95,5 +112,5 @@
     })
 
     app.use(router)
-    app.mount('#header')
+    app.mount('#app')
 </script>

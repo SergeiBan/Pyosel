@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from animals.models import Animal, LostProfile, FoundProfile
-from rest_framework.validators import UniqueTogetherValidator
 
 
 class AnimalSerializer(serializers.ModelSerializer):
@@ -51,7 +50,8 @@ class OutputLostProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LostProfile
         fields = (
-            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty'
+            'animal', 'loss_city_part', 'loss_street', 'loss_date', 'bounty',
+            'nickname', 'loss_date'
         )
 
 

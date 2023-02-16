@@ -1,14 +1,12 @@
 export default {
     data() {
         return {
-            profiles: null,
-            url: '/api/v1/lost_profiles/',
-            city: null,
-            date: null,
-            gender: 'M',
-            species: 'dogs',
-            currentPage: 'lost'
+            animals: null,
+            url: '/api/v1/animals/'
         }
+    },
+    props: {
+        city: String
     },
     methods: {
         async detailsSubmit(e) {
@@ -18,14 +16,17 @@ export default {
             this.profiles = await response.json()
         }
     },
+    mounted: {
+
+    },
     template: `
-    <div class="col-12"><p>Пожалуйста, уточните, какого питомца вы нашли? Где и когда?
-        Вслед за этим будут показаны все подходящие потерянные животные.</p></div>
+    <div class="col-12"><p>Пожалуйста, уточните, какого питомца вы потеряли? Где и когда?
+        Вслед за этим будут показаны все подходящие найденные животные.</p></div>
     <div class="col-md-3">
-        <input v-model="city" type="text" placeholder="Город" class="form-control mb-4" @blur="detailsSubmit">
+        <input type="text" v-model="city" placeholder="Город" class="form-control mb-4" @blur="detailsSubmit">
     </div>
     <div class="col-md-3">
-        <input v-model="date" type="date" class="form-control mb-4" @blur="detailsSubmit">
+        <input type="date" v-model="date" class="form-control mb-4" @blur="detailsSubmit">
     </div>
     <div class="col-md-3">
         <select v-model="species" class="form-select mb-2" required @blur="detailsSubmit">
@@ -39,17 +40,13 @@ export default {
             <option value="F">Ж</option>
         </select>
     </div>
-    <div v-for="profile in profiles" :key="profile.id" class="card col-md-6 col-xl-3 g-2">
+    <div v-for="profile in profiles" :key="profile.id" class="card col-md-6 col-xl-3">
         <img :src="profile.animal.avatar_thumbnail" class="card-img-top" alt="Фото животного">
         <div class="card-body text-center">
-            <h5 class="card-title">
-                <span class="badge bg-info">{{ profile.lost_date }}</span>
-            </h5>
-            <p class="card-text">
-                {{ profile.animal.nickname }} {{ profile.animal.gender }}
-                {{ profile.loss_city_part }} {{ profile.loss_street }}
-                <span v-if="profile.bounty">Награда: {{ profile.bounty }}</span>
-            </p>
+            <h5 class="card-title"><span class="badge bg-info">{{ profile.found_date }}</span></h5>
+            <p class="card-text>
+            {{ profile.animal.gender }}
+            {{ profile.city_part }} {{ profile.city_st</p>
         </div>
     </div>
     
