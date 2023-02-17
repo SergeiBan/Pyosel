@@ -9,15 +9,14 @@ export default {
         city: String
     },
     methods: {
-        async detailsSubmit(e) {
-            if (this.date === null || this.city === null) { return }
+        async getAnimals() {
             const requestOptions = { method: "GET" }
-            const response = await fetch(`${this.url}?city=${this.city}&date=${this.date}&species=${this.species}&gender=${this.gender}`, requestOptions)
+            const response = await fetch(`${this.url}`, requestOptions)
             this.profiles = await response.json()
         }
     },
-    mounted: {
-
+    mounted() {
+        this.submit()
     },
     template: `
     <div class="col-12"><p>Пожалуйста, уточните, какого питомца вы потеряли? Где и когда?

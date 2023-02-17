@@ -11,5 +11,5 @@ services:
   
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../static/:/var/html/static/
+      - ../pyosel-frontend/dist/:/var/html/static/
       - ../media/:/var/html/media/

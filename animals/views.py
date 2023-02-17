@@ -18,7 +18,7 @@ class AnimalViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    @action(details=False, permission_classes=[IsAuthenticated])
+    @action(detail=False, permission_classes=[IsAuthenticated])
     def owned_animals(self, request):
         queryset = Animal.objects.filter(owner=request.user)
         serializer = self.serializer_class(data=queryset, many=True)
